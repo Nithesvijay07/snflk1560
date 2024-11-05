@@ -47,3 +47,6 @@ if ingredients_list:
             f"INSERT INTO smoothies.public.orders (ingredients, name_on_order) VALUES ('{ingredients_string}', '{name_on_order}')"
         ).collect()
         st.success('Your Smoothie is ordered!', icon="✅")
+import requests
+fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+st.text(fruityvice_response)
