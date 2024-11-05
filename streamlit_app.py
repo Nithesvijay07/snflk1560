@@ -1,3 +1,4 @@
+Corrected Smoothie App with API Error Handling
 import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
@@ -62,12 +63,17 @@ if ingredients_list:
                 st.write(f"Name: {name_on_order}")
                 st.write(f"Ingredients: {ingredients_string}")
                 
-                # Clear the form (Note: This will only work after the next rerun)
-                st.session_state.clear()
-                
             except Exception as e:
                 st.error('Failed to submit order. Please try again.')
 
-# API call
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-st.text(fruityvice_response.json())
+# API call with proper error handling
+try:
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+    if fruityvice_response.status_code == 200:
+        st.write("Fruit Information:", fruityvice_response.json())
+    else:
+        st.error(f"Failed to fetch fruit information. Status code: {fruityvice_response.status_code}")
+except requests.exceptions.RequestException as e:
+    st.error(f"Error accessing the Fruityvice API: {str(e)}")
+except ValueError as e:
+    st.error("Error decoding the API response")
